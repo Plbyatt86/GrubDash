@@ -1,12 +1,9 @@
 const path = require("path");
 
-// Using the existing dishes data
 const dishes = require(path.resolve("src/data/dishes-data"));
 
-// Using this function to assign ID's when necessary
 const nextId = require("../utils/nextId");
 
-// Validation Functions for Create and Update functions:
 function bodyHasNameProperty(req, res, next) {
   const { data = {} } = req.body;
 
@@ -16,7 +13,7 @@ function bodyHasNameProperty(req, res, next) {
       message: "Dish must include a name.",
     });
   }
-  // Passing the reqest body data to the next middleware/handler functions using "response.locals"
+
   res.locals.reqBody = data;
   return next();
 }
@@ -65,7 +62,7 @@ function bodyHasImageUrlProperty(req, res, next) {
   return next();
 }
 
-// Validation Function for Read and Update functions:
+
 function dishExists(req, res, next) {
   const { dishId } = req.params;
   const foundDish = dishes.find((dish) => dish.id === dishId);
@@ -82,7 +79,7 @@ function dishExists(req, res, next) {
   });
 }
 
-// Validation Function for the Update function:
+
 function bodyIdMatchesRouteId(req, res, next) {
   const dishId = res.locals.dishId;
   const reqBody = res.locals.reqBody;
@@ -101,18 +98,14 @@ function bodyIdMatchesRouteId(req, res, next) {
   return next();
 }
 
-// Route Handlers:
 function update(req, res) {
   const dish = res.locals.dish;
   const reqBody = res.locals.reqBody;
 
-  // Creating array of property names
   const existingDishProperties = Object.getOwnPropertyNames(dish);
 
   for (let i = 0; i < existingDishProperties.length; i++) {
-    // Accessing each dish object key within the array
     let propName = existingDishProperties[i];
-    // Updating each value if there is a difference between the existing dish and the req body dish
     if (dish[propName] !== reqBody[propName]) {
       dish[propName] = reqBody[propName];
     }
